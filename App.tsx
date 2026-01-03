@@ -20,17 +20,20 @@ const App: React.FC = () => {
     carbonReducedKg: 84.5
   });
 
+  // Gerenciamento de tema centralizado
   useEffect(() => {
+    const htmlElement = document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      htmlElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      htmlElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
   }, [isDarkMode]);
 
   const handleFileUpload = (files: FileList) => {
     setStatus(AppStatus.UPLOADING);
-    // Simula upload e processamento
     setTimeout(() => {
       setStatus(AppStatus.PROCESSING);
     }, 1500);
@@ -38,7 +41,6 @@ const App: React.FC = () => {
 
   const handleProcessingComplete = () => {
     setStatus(AppStatus.COMPLETED);
-    // Incrementa estatísticas globais simuladas
     setStats(prev => ({
       ...prev,
       sheetsSaved: prev.sheetsSaved + 4
@@ -50,7 +52,7 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = () => setIsDarkMode(prev => !prev);
 
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-x-hidden">
@@ -61,7 +63,7 @@ const App: React.FC = () => {
       
       <main className="flex-grow">
         {status === AppStatus.IDLE && (
-          <>
+          <div className="animate-in fade-in duration-700">
             <Hero stats={stats} />
             
             <div id="converter" className="max-w-4xl mx-auto px-4 pb-24 scroll-mt-20">
@@ -74,7 +76,7 @@ const App: React.FC = () => {
             <HowItWorks />
             
             <Pricing />
-          </>
+          </div>
         )}
 
         {(status === AppStatus.UPLOADING || status === AppStatus.PROCESSING) && (
